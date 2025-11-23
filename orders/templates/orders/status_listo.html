@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¡Pedido Listo! | FlowBar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .bg-dark { background-color: #121212; }
+        .card-bg { background-color: #1E1E1E; }
+        /* Colores específicos de tu diseño "Listo" */
+        .text-green-neon { color: #4ADE80; text-shadow: 0 0 10px rgba(74, 222, 128, 0.5); }
+        .bg-green-circle { background-color: #22C55E; }
+        .btn-cyan { background-color: #67E8F9; color: black; }
+    </style>
+</head>
+<body class="bg-dark text-white font-sans min-h-screen flex flex-col items-center justify-center p-6 relative">
+
+    <!-- Círculo Check Verde (Animado) -->
+    <div class="mb-8 relative">
+        <div class="w-28 h-28 rounded-full bg-green-900/30 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 animate-pulse"></div>
+        <div class="w-20 h-20 rounded-full bg-green-circle flex items-center justify-center relative z-10 shadow-[0_0_20px_rgba(34,197,94,0.6)]">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="white" class="w-10 h-10">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+            </svg>
+        </div>
+    </div>
+
+    <!-- Título -->
+    <h1 class="text-4xl font-black text-green-neon text-center mb-10 uppercase leading-tight tracking-wide">
+        ¡Listo para<br>retirar!
+    </h1>
+
+    <!-- Tarjeta de Información -->
+    <div class="card-bg w-full max-w-sm rounded-3xl p-8 text-center shadow-2xl border border-gray-800">
+        <p class="text-gray-400 text-sm uppercase tracking-widest mb-2">Pedido N°</p>
+        <h2 class="text-6xl font-black text-[#00E5FF] mb-6">#{{ pedido.id_pedido }}</h2>
+
+        <p class="text-gray-300 text-lg mb-1">Retira en</p>
+        <!-- Aquí usamos el ID del trabajador para simular la estación -->
+        <p class="text-3xl font-bold text-green-500">
+            Estación {{ pedido.id_trabajador.id_trabajador }}
+        </p>
+    </div>
+
+    <!-- Botón Volver -->
+    <div class="w-full max-w-sm mt-10">
+        <a href="{% url 'carta' %}" class="block w-full btn-cyan hover:bg-cyan-400 font-bold text-lg py-4 rounded-full text-center shadow-[0_0_15px_rgba(103,232,249,0.4)] transition-all">
+            Volver al Inicio
+        </a>
+    </div>
+
+</body>
+</html>

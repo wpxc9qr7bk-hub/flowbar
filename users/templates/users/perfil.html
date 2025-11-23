@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Perfil | FlowBar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .neon-text { color: #00E5FF; text-shadow: 0 0 10px rgba(0, 229, 255, 0.5); }
+        .bg-dark { background-color: #121212; }
+        .card-bg { background-color: #1E1E1E; }
+        .avatar-bg { background-color: #7C4DFF; }
+    </style>
+</head>
+<body class="bg-dark text-white font-sans min-h-screen pb-20">
+
+    <!-- Header -->
+    <header class="p-6 flex items-center">
+        <a href="{% url 'carta' %}" class="mr-4 text-gray-400 hover:text-white transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+            </svg>
+        </a>
+        <h1 class="text-3xl font-black neon-text tracking-wide">Mi Perfil</h1>
+    </header>
+
+    <main class="px-6 mt-2">
+        
+        <!-- Tarjeta del Usuario (LIMPIA) -->
+        <div class="card-bg rounded-3xl p-8 flex flex-col items-center mb-8 shadow-lg border border-gray-800 relative overflow-hidden">
+            
+            <!-- Círculo de Avatar -->
+            <div class="w-24 h-24 rounded-full avatar-bg flex items-center justify-center mb-4 shadow-lg shadow-purple-900/50 ring-4 ring-[#1E1E1E] z-10">
+                {% if user.avatar %}
+                    <!-- Si subió foto, mostramos la foto -->
+                    <img src="{{ user.avatar.url }}" alt="Avatar" class="w-full h-full rounded-full object-cover">
+                {% else %}
+                    <!-- Si no tiene foto, mostramos la inicial de su nombre -->
+                    <span class="text-4xl font-bold text-white uppercase">{{ user.username|slice:":1" }}</span>
+                {% endif %}
+            </div>
+            
+            <!-- Nombre de Usuario -->
+            <h2 class="text-2xl font-bold text-white mb-1 capitalize tracking-tight">{{ user.username }}</h2>
+            
+            <!-- Correo Electrónico -->
+            {% if user.email %}
+                <p class="text-gray-400 text-sm">{{ user.email }}</p>
+            {% else %}
+                <p class="text-gray-500 text-xs italic">Sin correo registrado</p>
+            {% endif %}
+
+            <!-- (Se eliminaron las etiquetas de rol aquí) -->
+
+            <!-- Decoración de fondo suave -->
+            <div class="absolute top-0 left-0 w-full h-24 bg-gradient-to-b from-gray-800/50 to-transparent z-0"></div>
+        </div>
+
+        <!-- Menú de Opciones -->
+        <div class="space-y-3">
+            
+            <!-- Historial -->
+            <a href="{% url 'historial_pedidos' %}" class="w-full card-bg p-5 rounded-2xl flex justify-between items-center hover:bg-gray-800 transition-all group border border-transparent hover:border-gray-700 mb-3">
+                <div class="text-left">
+                    <h3 class="font-bold text-lg text-white group-hover:text-[#00E5FF] transition-colors">Historial de Pedidos</h3>
+                    <p class="text-xs text-gray-500 mt-0.5">Ver tus pedidos anteriores</p>
+                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="gray" class="w-5 h-5 group-hover:stroke-[#00E5FF] transform group-hover:translate-x-1 transition-all">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                </svg>
+            </a>
+
+            <!-- Métodos de Pago -->
+            <button class="w-full card-bg p-5 rounded-2xl flex justify-between items-center hover:bg-gray-800 transition-all group border border-transparent hover:border-gray-700">
+                <div class="text-left">
+                    <h3 class="font-bold text-lg text-white group-hover:text-[#00E5FF] transition-colors">Métodos de Pago</h3>
+                    <p class="text-xs text-gray-500 mt-0.5">Gestionar tarjetas guardadas</p>
+                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="gray" class="w-5 h-5 group-hover:stroke-[#00E5FF] transform group-hover:translate-x-1 transition-all">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                </svg>
+            </button>
+
+            <!-- Cerrar Sesión -->
+            <form action="{% url 'logout' %}" method="post" class="pt-6">
+                {% csrf_token %}
+                <button type="submit" class="w-full flex items-center justify-center gap-2 text-red-500 font-bold py-4 hover:bg-red-900/10 rounded-2xl transition-colors border border-transparent hover:border-red-900/30">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
+                    </svg>
+                    Cerrar Sesión
+                </button>
+            </form>
+
+        </div>
+    </main>
+
+    <!-- Barra de Navegación Inferior (Activo: Perfil) -->
+    <nav class="fixed bottom-0 w-full bg-black border-t border-gray-800 flex justify-around py-3 z-50 pb-6">
+        <a href="{% url 'carta' %}" class="flex flex-col items-center text-gray-500 hover:text-[#00E5FF] transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+            </svg>
+            <span class="text-[10px] mt-1 font-medium">Carta</span>
+        </a>
+        
+        <a href="{% url 'ver_carrito' %}" class="flex flex-col items-center text-gray-500 hover:text-[#00E5FF] transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+            </svg>
+            <span class="text-[10px] mt-1 font-medium">Carrito</span>
+        </a>
+        
+        <!-- Icono Perfil ACTIVO (Color Cian) -->
+        <div class="flex flex-col items-center text-[#00E5FF]">
+             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 drop-shadow-[0_0_5px_rgba(0,229,255,0.5)]">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+            </svg>
+            <span class="text-[10px] mt-1 font-medium">Perfil</span>
+        </div>
+    </nav>
+
+</body>
+</html>

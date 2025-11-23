@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión | FlowBar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Colores y fuentes */
+        .neon-text { color: #00E5FF; text-shadow: 0 0 10px rgba(0, 229, 255, 0.5); }
+        .bg-dark { background-color: #121212; }
+        .input-dark { background-color: #1E1E1E; color: white; border-color: #333; }
+        .btn-neon { background-color: #00E5FF; color: black; box-shadow: 0 0 15px rgba(0, 229, 255, 0.5); }
+
+        /* --- ANIMACIÓN DE LA INTRO (Splash) --- */
+        #splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000000; 
+            z-index: 9999; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.8s ease-out, visibility 0.8s;
+        }
+
+        /* --- ANIMACIÓN DE CAÍDA CAÓTICA --- */
+        @keyframes drop-chaos {
+            0% { opacity: 0; transform: translateY(-600px); }
+            60% { opacity: 1; transform: translateY(30px); }
+            75% { transform: translateY(-15px); }
+            90% { transform: translateY(5px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .chaos-letter {
+            display: inline-block;
+            font-size: 5rem;
+            font-weight: 900;
+            opacity: 0;
+            animation: drop-chaos 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            margin: 0 2px;
+        }
+        
+        .fade-out { opacity: 0; visibility: hidden; }
+    </style>
+</head>
+<body class="bg-dark text-white font-sans min-h-screen flex items-center justify-center">
+
+    <!-- === PANTALLA DE INTRO (Splash) === -->
+    <div id="splash-screen">
+        <div class="flex">
+            <span class="chaos-letter text-[#00E5FF]" style="animation-delay: 0.2s">F</span>
+            <span class="chaos-letter text-[#00E5FF]" style="animation-delay: 0.6s">l</span>
+            <span class="chaos-letter text-[#00E5FF]" style="animation-delay: 0.1s">o</span>
+            <span class="chaos-letter text-[#00E5FF]" style="animation-delay: 0.8s">w</span>
+            <span class="w-4"></span>
+            <span class="chaos-letter text-[#7C4DFF]" style="animation-delay: 0.3s">B</span>
+            <span class="chaos-letter text-[#7C4DFF]" style="animation-delay: 0.7s">a</span>
+            <span class="chaos-letter text-[#7C4DFF]" style="animation-delay: 0.4s">r</span>
+        </div>
+    </div>
+
+    <!-- === CONTENIDO PRINCIPAL (Login) === -->
+    <div class="w-full max-w-sm p-8 opacity-0 transition-opacity duration-1000" id="main-content">
+        <header class="text-center mb-10">
+            <h1 class="text-5xl font-extrabold tracking-tighter text-white">
+                <span class="text-[#00E5FF]">Flow</span><span class="text-[#7C4DFF]">Bar</span>
+            </h1>
+            <p class="text-gray-400 mt-3 text-sm font-medium tracking-wide">Tu bebida, sin hacer fila</p>
+        </header>
+
+        <form method="post" action="{% url 'login' %}">
+            {% csrf_token %}
+
+            <div class="mb-5">
+                <input type="text" name="username" id="id_username" placeholder="Usuario" required 
+                       class="w-full p-4 rounded-xl input-dark focus:ring-2 focus:ring-[#00E5FF] focus:outline-none transition-all duration-300" 
+                       autocomplete="username">
+            </div>
+
+            <div class="mb-6">
+                <input type="password" name="password" id="id_password" placeholder="Contraseña" required 
+                       class="w-full p-4 rounded-xl input-dark focus:ring-2 focus:ring-[#00E5FF] focus:outline-none transition-all duration-300" 
+                       autocomplete="current-password">
+                <a href="{% url 'password_reset' %}" class="text-xs text-gray-500 hover:text-[#00E5FF] block text-right mt-3 transition-colors">¿Olvidaste tu contraseña?</a>
+            </div>
+            
+            {% if form.errors %}
+                <div class="text-sm text-red-400 mb-4 p-3 bg-red-900/20 border border-red-900/50 rounded-lg text-center">
+                    Credenciales incorrectas. Inténtalo de nuevo.
+                </div>
+            {% endif %}
+
+            <button type="submit" class="w-full btn-neon font-bold text-lg p-3.5 rounded-xl hover:opacity-90 hover:scale-[1.02] active:scale-95 transition-all duration-200">
+                Iniciar Sesión
+            </button>
+        </form>
+
+        <div class="flex items-center my-8">
+            <div class="flex-grow h-px bg-gray-800"></div>
+            <span class="px-4 text-gray-600 text-sm">o</span>
+            <div class="flex-grow h-px bg-gray-800"></div>
+        </div>
+
+        <button class="w-full bg-[#1E1E1E] text-gray-300 py-3 rounded-xl mb-3 font-medium hover:bg-gray-800 hover:text-white transition-colors border border-gray-800 text-sm flex items-center justify-center gap-2">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.748L12.545,10.239z"/></svg>
+            Continuar con Google
+        </button>
+
+        <div class="text-center mt-8">
+            <p class="text-gray-400 text-sm">¿No tienes cuenta? 
+                <a href="{% url 'register' %}" class="neon-text hover:underline font-bold ml-1 transition-all hover:text-[#7C4DFF]">Regístrate aquí</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- SCRIPT DE LA INTRO -->
+    <script>
+        window.addEventListener('load', () => {
+            // Este script se ejecuta SIEMPRE al cargar la página
+            setTimeout(() => {
+                const splash = document.getElementById('splash-screen');
+                const mainContent = document.getElementById('main-content');
+                
+                // 1. Desvanecer el Splash
+                splash.classList.add('fade-out');
+                
+                // 2. Mostrar el formulario
+                setTimeout(() => {
+                    mainContent.style.opacity = '1';
+                    splash.style.display = 'none';
+                }, 600);
+            }, 2200); // Espera 2.2 segundos antes de desaparecer
+        });
+    </script>
+
+    <!-- REPRODUCTOR DE MÚSICA DE FONDO -->
+    <audio id="bg-music" loop>
+        <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=lofi-study-112191.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Botón de Control de Música -->
+    <button id="music-toggle" class="fixed bottom-4 right-4 bg-gray-800/80 hover:bg-gray-700 text-[#00E5FF] p-3 rounded-full shadow-lg transition-all z-50 border border-gray-700">
+        <svg id="icon-play" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19.114 5.636a9 9 0 010 12.728M16.463 8.288a5.25 5.25 0 010 7.424M6.75 8.25l4.72-4.72a.75.75 0 011.28.53v15.88a.75.75 0 01-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.01 9.01 0 012.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75z" />
+        </svg>
+        <svg id="icon-pause" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 hidden">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25v13.5m-7.5-13.5v13.5" />
+        </svg>
+    </button>
+
+    <script>
+        const music = document.getElementById('bg-music');
+        const toggleBtn = document.getElementById('music-toggle');
+        const iconPlay = document.getElementById('icon-play');
+        const iconPause = document.getElementById('icon-pause');
+        
+        music.volume = 0.3; 
+
+        toggleBtn.addEventListener('click', () => {
+            if (music.paused) {
+                music.play();
+                iconPlay.classList.add('hidden');
+                iconPause.classList.remove('hidden');
+                toggleBtn.classList.add('text-green-400');
+            } else {
+                music.pause();
+                iconPlay.classList.remove('hidden');
+                iconPause.classList.add('hidden');
+                toggleBtn.classList.remove('text-green-400');
+            }
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estado del Pedido | FlowBar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .neon-text { color: #00E5FF; text-shadow: 0 0 10px rgba(0, 229, 255, 0.5); }
+        .violet-text { color: #7C4DFF; }
+        .bg-dark { background-color: #121212; }
+        .card-bg { background-color: #1E1E1E; }
+
+        /* --- ANIMACIÓN DE OLA --- */
+        @keyframes wave {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); color: #9D74FF; text-shadow: 0 0 15px rgba(157, 116, 255, 0.8); }
+        }
+        
+        .wave-char {
+            display: inline-block; /* Necesario para que transform funcione */
+            animation: wave 1.2s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-dark text-white font-sans min-h-screen flex items-center justify-center">
+
+    <div class="text-center p-8 w-full max-w-sm">
+        
+        <!-- TÍTULO ANIMADO COMO OLA -->
+        <h2 class="text-4xl font-extrabold violet-text mb-10 flex justify-center flex-wrap">
+            <!-- Palabra: Preparando -->
+            <span class="flex">
+                <span class="wave-char" style="animation-delay: 0.0s">P</span>
+                <span class="wave-char" style="animation-delay: 0.1s">r</span>
+                <span class="wave-char" style="animation-delay: 0.2s">e</span>
+                <span class="wave-char" style="animation-delay: 0.3s">p</span>
+                <span class="wave-char" style="animation-delay: 0.4s">a</span>
+                <span class="wave-char" style="animation-delay: 0.5s">r</span>
+                <span class="wave-char" style="animation-delay: 0.6s">a</span>
+                <span class="wave-char" style="animation-delay: 0.7s">n</span>
+                <span class="wave-char" style="animation-delay: 0.8s">d</span>
+                <span class="wave-char" style="animation-delay: 0.9s">o</span>
+            </span>
+            
+            <span class="w-3"></span> <!-- Espacio -->
+
+            <!-- Palabra: tu -->
+            <span class="flex">
+                <span class="wave-char" style="animation-delay: 1.0s">t</span>
+                <span class="wave-char" style="animation-delay: 1.1s">u</span>
+            </span>
+
+            <span class="w-3"></span> <!-- Espacio -->
+
+            <!-- Palabra: pedido -->
+            <span class="w-full h-2 block md:hidden"></span> <!-- Salto de línea en móvil si es necesario -->
+            
+            <span class="flex">
+                <span class="wave-char" style="animation-delay: 1.2s">p</span>
+                <span class="wave-char" style="animation-delay: 1.3s">e</span>
+                <span class="wave-char" style="animation-delay: 1.4s">d</span>
+                <span class="wave-char" style="animation-delay: 1.5s">i</span>
+                <span class="wave-char" style="animation-delay: 1.6s">d</span>
+                <span class="wave-char" style="animation-delay: 1.7s">o</span>
+            </span>
+        </h2>
+
+        <div class="card-bg p-8 rounded-2xl shadow-xl">
+            <p class="text-gray-400 text-sm mb-2">Pedido N°</p>
+            <h1 class="text-6xl font-black neon-text mb-6">{{ pedido_id }}</h1>
+
+            <p class="text-gray-300 text-base">Tu bartender</p>
+            <p class="text-2xl font-bold text-white mb-6">{{ bartender_name }}</p>
+            
+            <p class="text-gray-400">
+                Está preparando tus bebidas
+            </p>
+            
+            <!-- Animación de carga (Puntos) -->
+            <div class="flex justify-center space-x-2 mt-4">
+                <div class="w-2 h-2 bg-[#00E5FF] rounded-full animate-pulse"></div>
+                <div class="w-2 h-2 bg-gray-600 rounded-full animate-pulse delay-75"></div>
+                <div class="w-2 h-2 bg-gray-600 rounded-full animate-pulse delay-150"></div>
+            </div>
+        </div>
+
+        <a href="{% url 'carta' %}" class="mt-8 block text-gray-500 hover:text-[#00E5FF] underline">
+            Volver a la carta
+        </a>
+    </div>
+
+    <!-- SCRIPT MÁGICO DE ACTUALIZACIÓN AUTOMÁTICA -->
+    <script>
+        const pedidoId = "{{ pedido_id }}";
+        
+        function verificarEstado() {
+            // Llamamos a la API que creamos en views.py
+            fetch(`/orders/api/check_status/${pedidoId}/`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Estado del pedido:", data); // Para depuración
+                    
+                    if (data.listo === true) {
+                        // ¡SÍ! El bartender marcó listo.
+                        // Recargamos la página actual.
+                        // Como la vista 'order_status' en Django ya tiene la lógica
+                        // para mostrar 'status_listo.html' si el pedido está finalizado,
+                        // al recargar aparecerá la pantalla verde automáticamente.
+                        window.location.reload();
+                    }
+                })
+                .catch(error => console.error('Error consultando estado:', error));
+        }
+
+        // Ejecutar la verificación cada 3 segundos (3000 ms)
+        const intervalo = setInterval(verificarEstado, 3000);
+    </script>
+
+</body>
+</html>

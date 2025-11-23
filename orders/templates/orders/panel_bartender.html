@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Bartender | FlowBar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .bg-dark { background-color: #050510; }
+        .card-bg { background-color: rgba(30, 30, 30, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.05); }
+        .neon-text { color: #00E5FF; text-shadow: 0 0 15px rgba(0, 229, 255, 0.8); }
+        
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* --- FONDO DE PARTÍCULAS IMPACTANTE --- */
+        .particle-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
+            overflow: hidden;
+        }
+
+        /* --- NUEVO: LUZ INFERIOR PALPITANTE --- */
+        .bottom-glow {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 30%; /* Ocupa el tercio inferior */
+            background: linear-gradient(to top, rgba(0, 229, 255, 0.15), transparent);
+            animation: pulseGlow 4s infinite ease-in-out; /* Ritmo suave de 4 segundos */
+            pointer-events: none;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 0.3; height: 25%; }
+            50% { opacity: 0.6; height: 35%; } /* Sube y brilla más */
+        }
+
+        /* Técnica de múltiples sombras para muchas estrellas/partículas */
+        /* Capa 1: Pequeñas y lentas */
+        .stars {
+            width: 1px; height: 1px;
+            background: transparent;
+            box-shadow: 100px 200px #FFF, 300px 400px #FFF, 500px 100px #FFF, 
+                        800px 500px #FFF, 150px 600px #FFF, 700px 200px #FFF,
+                        400px 300px #FFF, 900px 100px #FFF, 200px 50px #FFF,
+                        600px 550px #FFF, 350px 150px #FFF, 850px 450px #FFF,
+                        100px 50px #FFF, 400px 20px #FFF, 900px 600px #FFF,
+                        1200px 800px #FFF, 1500px 200px #FFF; /* Más puntos */
+            animation: animStar 100s linear infinite;
+        }
+        .stars:after {
+            content: " "; position: absolute; top: 2000px; width: 1px; height: 1px;
+            background: transparent;
+            box-shadow: 100px 200px #FFF, 300px 400px #FFF, 500px 100px #FFF, 
+                        800px 500px #FFF, 150px 600px #FFF, 700px 200px #FFF,
+                        400px 300px #FFF, 900px 100px #FFF, 200px 50px #FFF,
+                        600px 550px #FFF, 350px 150px #FFF, 850px 450px #FFF,
+                        100px 50px #FFF, 400px 20px #FFF, 900px 600px #FFF,
+                        1200px 800px #FFF, 1500px 200px #FFF;
+        }
+
+        /* Capa 2: Medianas y coloridas */
+        .stars2 {
+            width: 3px; height: 3px;
+            background: transparent;
+            box-shadow: 200px 300px rgba(124,77,255,0.5), 400px 100px rgba(0,229,255,0.5), 
+                        600px 500px rgba(124,77,255,0.5), 800px 200px rgba(0,229,255,0.5),
+                        1100px 600px rgba(0,229,255,0.5), 1300px 100px rgba(124,77,255,0.5);
+            animation: animStar 150s linear infinite;
+        }
+        .stars2:after {
+             content: " "; position: absolute; top: 2000px; width: 3px; height: 3px;
+            background: transparent;
+            box-shadow: 200px 300px rgba(124,77,255,0.5), 400px 100px rgba(0,229,255,0.5), 
+                        600px 500px rgba(124,77,255,0.5), 800px 200px rgba(0,229,255,0.5),
+                        1100px 600px rgba(0,229,255,0.5), 1300px 100px rgba(124,77,255,0.5);
+        }
+
+        /* Capa 3: Grandes y rápidas (NUEVO) */
+        .stars3 {
+            width: 4px; height: 4px;
+            background: transparent;
+            box-shadow: 150px 800px rgba(255,255,255,0.2), 900px 200px rgba(255,255,255,0.2),
+                        500px 500px rgba(255,255,255,0.2);
+            animation: animStar 70s linear infinite;
+        }
+        .stars3:after {
+            content: " "; position: absolute; top: 2000px; width: 4px; height: 4px;
+             background: transparent;
+            box-shadow: 150px 800px rgba(255,255,255,0.2), 900px 200px rgba(255,255,255,0.2),
+                        500px 500px rgba(255,255,255,0.2);
+        }
+        
+        @keyframes animStar {
+            from { transform: translateY(0px); }
+            to { transform: translateY(-2000px); }
+        }
+
+        /* --- EFECTO DE FLASH MÁS INTENSO --- */
+        @keyframes flash-success {
+            0% { background-color: rgba(0, 230, 118, 0); }
+            10% { background-color: rgba(0, 230, 118, 0.4); box-shadow: inset 0 0 100px rgba(0, 230, 118, 0.8); }
+            100% { background-color: rgba(0, 230, 118, 0); }
+        }
+
+        .flash-effect {
+            animation: flash-success 0.6s ease-out;
+        }
+    </style>
+</head>
+<body class="text-white font-sans h-screen flex flex-col overflow-hidden relative" id="body-panel">
+
+    <!-- Fondo Animado de Partículas -->
+    <div class="particle-bg">
+        <div class="bottom-glow"></div> <!-- LUZ PALPITANTE -->
+        <div class="stars"></div>
+        <div class="stars2"></div>
+        <div class="stars3"></div> <!-- MÁS PUNTOS -->
+    </div>
+
+    <!-- Header del Bartender -->
+    <header class="p-4 bg-gray-900/60 backdrop-blur border-b border-gray-800 flex justify-between items-center z-10 relative">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-purple-600 flex items-center justify-center font-bold text-lg shadow-lg shadow-purple-500/30 ring-2 ring-purple-400/20">
+                {{ trabajador.nom_trabajador|slice:":1" }}
+            </div>
+            <div>
+                <h1 class="text-xl font-bold tracking-wide">{{ trabajador.nom_trabajador }}</h1>
+                <span class="text-xs text-green-400 flex items-center gap-1 font-medium">
+                    <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse shadow-[0_0_8px_#4ade80]"></span> En línea
+                </span>
+            </div>
+        </div>
+        <div class="text-right">
+            <p class="text-gray-400 text-xs uppercase tracking-wider font-semibold">Pedidos en cola</p>
+            <p class="text-3xl font-black neon-text">{{ pedidos|length }}</p>
+        </div>
+    </header>
+
+    <!-- Lista de Pedidos -->
+    <main class="flex-1 p-4 overflow-y-auto no-scrollbar grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 content-start z-10 relative">
+
+        {% for pedido in pedidos %}
+        <div class="card-bg rounded-xl border-l-4 border-[#00E5FF] p-5 flex flex-col justify-between shadow-xl h-full min-h-[260px] transition-all duration-300 hover:shadow-[0_0_25px_rgba(0,229,255,0.2)] hover:-translate-y-1 group">
+            <div>
+                <div class="flex justify-between items-start mb-4 border-b border-gray-700/50 pb-3">
+                    <div>
+                        <h2 class="text-3xl font-black text-white tracking-tighter group-hover:text-[#00E5FF] transition-colors">#{{ pedido.info.id_pedido }}</h2>
+                        <p class="text-xs text-gray-400 font-mono mt-1">{{ pedido.hora|date:"H:i" }}</p>
+                    </div>
+                    <span class="bg-gray-800/80 text-xs px-3 py-1 rounded-full text-gray-300 border border-gray-700">Mesa ?</span>
+                </div>
+
+                <ul class="space-y-3 mb-4">
+                    {% for item in pedido.items %}
+                    <li class="text-lg font-medium flex items-start gap-3">
+                        <span class="text-[#00E5FF] font-bold text-xl leading-none mt-1">•</span> 
+                        <span class="text-gray-100">{{ item }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <!-- Botón LISTO -->
+            <a href="{% url 'marcar_listo' pedido.info.id_pedido %}" onclick="triggerFlash()" class="w-full bg-gradient-to-r from-green-600 to-green-500 hover:from-green-500 hover:to-green-400 text-white font-bold py-3.5 rounded-xl text-center transition-all flex items-center justify-center gap-2 shadow-lg shadow-green-900/40 active:scale-95">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                </svg>
+                <span class="tracking-wide">LISTO</span>
+            </a>
+        </div>
+        {% empty %}
+        <div class="col-span-full flex flex-col items-center justify-center text-gray-500 h-96 z-10 animate-pulse">
+            <div class="w-24 h-24 rounded-full bg-gray-800/50 flex items-center justify-center mb-6">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-12 h-12 opacity-50">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            </div>
+            <p class="text-2xl font-bold text-gray-400">Todo tranquilo</p>
+            <p class="text-sm opacity-70 mt-1">Esperando nuevos pedidos...</p>
+        </div>
+        {% endfor %}
+
+    </main>
+
+    <!-- Script Flash -->
+    <script>
+        function triggerFlash() {
+            const body = document.getElementById('body-panel');
+            body.classList.add('flash-effect');
+            localStorage.setItem('flash', 'true');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem('flash') === 'true') {
+                const body = document.getElementById('body-panel');
+                body.classList.add('flash-effect');
+                setTimeout(() => {
+                    body.classList.remove('flash-effect');
+                    localStorage.removeItem('flash');
+                }, 600);
+            }
+        });
+    </script>
+
+</body>
+</html>

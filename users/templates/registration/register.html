@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro | FlowBar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .neon-text { color: #00E5FF; text-shadow: 0 0 10px rgba(0, 229, 255, 0.5); }
+        .bg-dark { background-color: #121212; }
+        /* Clases de Input para darle el aspecto oscuro y ancho */
+        .input-dark { 
+            background-color: #1E1E1E; 
+            color: white; 
+            border-color: #333; 
+            border-radius: 0.75rem; 
+            padding: 1rem; 
+            width: 100%;
+            /* Quita el borde por defecto */
+            border-width: 0; 
+        }
+        .btn-neon { background-color: #00E5FF; color: black; box-shadow: 0 0 15px rgba(0, 229, 255, 0.5); }
+    </style>
+</head>
+<body class="bg-dark text-white font-sans min-h-screen flex items-center justify-center">
+
+    <div class="w-full max-w-sm p-8">
+        <header class="text-center mb-10">
+            <h1 class="text-4xl font-extrabold neon-text">Regístrate</h1>
+            <p class="text-gray-400 mt-2">Crea tu cuenta para ordenar sin filas.</p>
+        </header>
+
+        <form method="post">
+            {% csrf_token %}
+            
+            <!-- Campos del Formulario de Registro - APLICANDO ESTILOS -->
+            {% for field in form %}
+            <div class="mb-4">
+                <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-400 mb-1">{{ field.label }}</label>
+                
+                <!-- SOLUCIÓN FINAL: USAMOS EL FILTRO render_field -->
+                {% load widget_tweaks %}
+                {% render_field field class="input-dark focus:ring-2 focus:ring-[#00E5FF] focus:outline-none" %}
+                
+                {% if field.help_text %}
+                    <p class="text-xs text-gray-500 mt-1">{{ field.help_text|safe }}</p>
+                {% endif %}
+                {% for error in field.errors %}
+                    <p class="text-xs text-red-400 mt-1">{{ error }}</p>
+                {% endfor %}
+            </div>
+            {% endfor %}
+
+            <!-- Botón Principal -->
+            <button type="submit" class="w-full btn-neon font-bold text-lg p-3 rounded-xl hover:opacity-90 transition-opacity mt-4">
+                Crear Cuenta
+            </button>
+        </form>
+
+        <div class="text-center mt-8">
+            <p class="text-gray-400">¿Ya tienes cuenta? 
+                <a href="{% url 'login' %}" class="neon-text underline font-semibold">Iniciar Sesión</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>
