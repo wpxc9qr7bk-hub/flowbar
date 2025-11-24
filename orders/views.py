@@ -5,7 +5,7 @@ from .models import Pedidos, DetallePedido
 from menu.models import Producto
 from users.models import Cliente, Trabajador
 from .logic import assign_bartender_algorithm
-from datetime import datetime
+from datetime import timezone
 from django.db import transaction
 from django.http import JsonResponse
 
@@ -60,7 +60,7 @@ def checkout(request):
     nuevo_pedido = Pedidos.objects.create(
         id_cliente=cliente_final,  # <--- Usamos el objeto cliente recuperado/creado
         id_trabajador=assigned_bartender,
-        fecha_hora=datetime.now(),
+        fecha_hora=timezone.now(),
         forma_pago='Tarjeta',
         estado='PREPARACION'
     )
