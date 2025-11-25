@@ -5,7 +5,7 @@ from .models import Pedidos, DetallePedido
 from menu.models import Producto
 from users.models import Cliente, Trabajador
 from .logic import assign_bartender_algorithm
-from datetime import timezone
+from django.utils import timezone
 from django.db import transaction
 from django.http import JsonResponse
 
